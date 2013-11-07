@@ -22,7 +22,7 @@ public class ServerPipelineFactory implements ChannelPipelineFactory {
           //engine.setUseClientMode(false);
           //pipeline.addLast("ssl", new SslHandler(engine));
   
-          //pipeline.addLast("decoder", new HttpRequestDecoder());
+         // pipeline.addLast("decoder", new FrameHandler());
           // Uncomment the following line if you don't want to handle HttpChunks.
           //pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
           //pipeline.addLast("encoder", new HttpResponseEncoder());

@@ -18,9 +18,9 @@ public class App
 {
     public static void main( String[] args ) throws UnknownHostException, IOException
     {
+        WriteLog.initLogging();
         //число рабочих потоков, максимум памяти на 1 канал, максимальный суммарный размер памяти, время жизни
         //(int corePoolSize, long maxChannelMemorySize, long maxTotalMemorySize, long keepAliveTime, TimeUnit unit) 
-        
         ExecutorService bossExec = new OrderedMemoryAwareThreadPoolExecutor(1, 400000000, 2000000000, 60, TimeUnit.SECONDS);
         ExecutorService ioExec = new OrderedMemoryAwareThreadPoolExecutor(4 /* число рабочих потоков */, 400000000, 2000000000, 60, TimeUnit.SECONDS);
         // Configure the server.

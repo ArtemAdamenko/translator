@@ -1,6 +1,10 @@
 package com.cds.translator;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.*;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.*;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.*;
@@ -49,8 +53,26 @@ public class RequestHandler extends SimpleChannelUpstreamHandler {
               byte[] res2 = res.array();
               String str = new String(res2, "UTF-8");
               //System.out.println(str);
+              
+             /* boolean result = WriteLog.checkLogFile();
+              if (!result){
+                  String logPath = WriteLog.getRouteLogPath();
+                  File flt = new File(logPath + "/work.txt");
+                    PrintWriter out = new PrintWriter(new BufferedWriter(
+                        new FileWriter(flt)));
+                    out.print(str);
+                    out.flush();
+                    out.close();
+              }else{*/
+                 String logPath = WriteLog.getRouteLogPath();
+                 PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logPath + "/work.txt",true)));
+                 out.print(str);
+                    out.flush();
+                    out.close();
+             // }
               ChannelFuture future = e.getFuture();
               future.addListener(ChannelFutureListener.CLOSE);
+              
               /*if (is100ContinueExpected(request)) {
                   send100Continue(e);
               }
