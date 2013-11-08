@@ -6,7 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
+import org.jboss.netty.channel.MessageEvent;
 
 /**
  *
@@ -29,6 +32,8 @@ public class WriteLog {
     private static SimpleDateFormat dateDirFormat = new SimpleDateFormat("MM-yyyy");
     /*шаблон для папки по дню*/
     private static SimpleDateFormat dayDirFormat = new SimpleDateFormat("dd");
+    
+    private static final StringBuilder buf = new StringBuilder();
     /*
      * Инициализация папок и файлов для логов
      */
@@ -109,4 +114,30 @@ public class WriteLog {
         out.print("Welcome to javaprobooks.ru");
         out.flush();
     }
+    
+     private static String getCurrentTime() {
+           Calendar calendar = Calendar.getInstance();
+           int hour = calendar.get(Calendar.HOUR_OF_DAY);
+           int minute = calendar.get(Calendar.MINUTE);
+           int second = calendar.get(Calendar.SECOND);
+           return String.format("%02d:%02d:%02d", hour, minute, second); // ЧЧ:ММ:СС - формат времени
+     }
+     
+     public static void writeRouteLog(MessageEvent e) throws IOException{
+        BigEndianHeapChannelBuffer res = (BigEndianHeapChannelBuffer)e.getMessage();
+        byte[] res2 = res.array();
+        String str = new String(res2, "UTF-8");
+        buf.setLength(0);
+        buf.append(getCurrentTime());
+        buf.append(" Данные обработаны для ");
+        buf.append(e.getRemoteAddress());
+        buf.append(" Message: ");
+        buf.append(str);
+        buf.append("\r\n");
+
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(routeLogDir + "/work.txt",true)));
+        out.print(buf);
+        out.flush();
+        out.close();   
+     }
 }
