@@ -1,15 +1,15 @@
 package com.cds.translator;
 
+import com.cds.mybatis.MyBatisManager;
+import com.cds.mybatis.RequestDataSessionManager;
+import com.cds.mybatis.RequestProjectsSessionManager;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
  
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -19,6 +19,14 @@ public class App
     public static void main( String[] args ) throws UnknownHostException, IOException
     {
         WriteLog.initLogging();
+        try {
+            MyBatisManager.initDBFactory("development", "Projects");
+            MyBatisManager.initDBFactory("development", "Data");
+            RequestProjectsSessionManager.initialize();
+            RequestDataSessionManager.initialize();
+        } catch (Exception ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //число рабочих потоков, максимум памяти на 1 канал, максимальный суммарный размер памяти, время жизни
         //(int corePoolSize, long maxChannelMemorySize, long maxTotalMemorySize, long keepAliveTime, TimeUnit unit) 
         ExecutorService bossExec = new OrderedMemoryAwareThreadPoolExecutor(1, 400000000, 2000000000, 60, TimeUnit.SECONDS);
