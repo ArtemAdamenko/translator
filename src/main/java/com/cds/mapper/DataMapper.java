@@ -1,6 +1,7 @@
 package com.cds.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -16,4 +17,7 @@ import org.apache.ibatis.mapping.StatementType;
 public interface DataMapper {
     @Select("SELECT NAME_ FROM USERS WHERE ID_ = #{id}")
     public String test(int id);
+    
+    @Insert("INSERT INTO TEST(ID) VALUES(#{id})")
+    public void insert(int id);
 }

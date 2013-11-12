@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
 import org.jboss.netty.channel.MessageEvent;
 
 /**
@@ -18,7 +17,7 @@ import org.jboss.netty.channel.MessageEvent;
  * @author Adamenko Artem <adamenko.artem@gmail.com>
  * Запись логов в файл
  */
-public class WriteLog {
+public class WriteLog implements Runnable{
     /*Путь до папки с логами*/
     private static String LogDir  = "";
     /*Путь до папки с логами по дате*/
@@ -36,6 +35,11 @@ public class WriteLog {
     private static SimpleDateFormat dayDirFormat = new SimpleDateFormat("dd");
     
     private static final StringBuilder buf = new StringBuilder();
+    
+    /*параметры для вызова потока*/
+    public MessageEvent msgEvent;
+    public String param;
+    
     /*
      * Инициализация папок и файлов для логов
      */
@@ -128,28 +132,9 @@ public class WriteLog {
     }
     
     /*
-     * Проверка существования файла для записи логов маршрута
-     */
-    /*public static boolean checkLogFile(){
-        File logFile = new File(routeLogDir + "/work.txt");
-        if (logFile.exists())
-            return true;
-        else
-            return false;
-    }*/
-    
-    /*public void createFile() throws IOException{
-        File flt = new File("javaprobooks.txt");
-        PrintWriter out = new PrintWriter(new BufferedWriter(
-            new FileWriter(flt)));
-        out.print("Welcome to javaprobooks.ru");
-        out.flush();
-    }*/
-    
-    /*
      * Получение текущего времени
      */
-     private static String getCurrentTime() {
+     public static String getCurrentTime() {
            Calendar calendar = Calendar.getInstance();
            int hour = calendar.get(Calendar.HOUR_OF_DAY);
            int minute = calendar.get(Calendar.MINUTE);
@@ -198,5 +183,13 @@ public class WriteLog {
         out.close();   
      }
      
+
+    public void run() {
+        try {
+            writeRouteLog(msgEvent, param);
+        } catch (IOException ex) {
+            Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
      
 }
