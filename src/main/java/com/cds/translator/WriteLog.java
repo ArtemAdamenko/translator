@@ -187,6 +187,7 @@ public class WriteLog implements Runnable{
     public void run() {
         try {
             writeRouteLog(msgEvent, param);
+            Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Записано " + WriteLog.getCurrentTime());
         } catch (IOException ex) {
             Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, null, ex);
         }

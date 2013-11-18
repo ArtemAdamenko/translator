@@ -7,9 +7,9 @@
     <environment id="development">
       <transactionManager type="JDBC"/>
       <dataSource type="POOLED">
-        <property name="driver" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:192.168.137.142/3050:C:/SCAT/WORKBIN/DB/DATA.fdb"/>
-        <property name="username" value="sysdba"/>
+        <property name="driver" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://192.168.137.142:5432/CDS"/>
+        <property name="username" value="postgres"/>
         <property name="password" value="zaUgD5Lt"/>
       </dataSource>
     </environment>

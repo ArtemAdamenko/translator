@@ -2,6 +2,9 @@ package com.cds.translator;
  
 import com.cds.mapper.DataMapper;
 import com.cds.mybatis.RequestDataSessionManager;
+import com.cds.mybatis.testDB;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.ibatis.session.SqlSession;
@@ -21,6 +24,7 @@ public class RequestHandler extends SimpleChannelUpstreamHandler {
         /*Запись логов в файл*/
       private WriteLog writeLog = new WriteLog();
       private TestInsertDB test = new TestInsertDB();
+      private testDB db = new testDB();
       /*
        * Обработка входящего сообщения
        */
@@ -36,15 +40,20 @@ public class RequestHandler extends SimpleChannelUpstreamHandler {
             String str = new String(res2, "UTF-8");
             int id = Integer.parseInt(str);
             
-            test.id = id;
+            //test.id = id;
+            db.id = id;
+            /*ExecutorService service = Executors.newCachedThreadPool();
+            writeLog.msgEvent = e;
+            writeLog.param = name;
+            service.submit(writeLog);*/
             //запись в бд в отдельном потоке
-            /*Runnable r = test;
+            Runnable r = db;
             Thread t = new Thread(r);
-            t.start();*/
+            t.start();
             //запись в бд без отдельного потока
-            test.run2();
-            Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Данные приняты " + WriteLog.getCurrentTime());
-            
+            //test.run2();
+            Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Данные приняты " + WriteLog.getCurrentTime() + " " + id);
+            closeConn(e);
             //запрос в бд
             /*SqlSession session = RequestDataSessionManager.getRequestSession();
             DataMapper mapper = session.getMapper(DataMapper.class);   

@@ -1,5 +1,6 @@
 package com.cds.mapper;
 
+import com.cds.translator.TestInsertDB;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -18,6 +19,9 @@ public interface DataMapper {
     @Select("SELECT NAME_ FROM USERS WHERE ID_ = #{id}")
     public String test(int id);
     
-    @Insert("INSERT INTO TEST(ID) VALUES(#{id})")
+    @Insert("INSERT INTO test(id) VALUES(#{id})")
     public void insert(int id);
+    
+    @SelectProvider(type = TestInsertDB.class, method = "insert")
+    public void insertProvider(int id);
 }
