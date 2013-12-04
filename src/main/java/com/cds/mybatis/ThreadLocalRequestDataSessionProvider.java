@@ -21,7 +21,7 @@ class ThreadLocalRequestDataSessionProvider implements RequestSessionProvider {
         if (session == null) {
             try {
                 session = MyBatisManager.getDataSessionFactory().openSession();
-            } catch (Exception ex) {
+            }catch (Exception ex) {
                 Logger.getLogger(ThreadLocalRequestDataSessionProvider.class.getName()).log(Level.SEVERE, null, ex);
             }
             thSession.set(session);
