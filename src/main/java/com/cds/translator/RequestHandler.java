@@ -29,31 +29,56 @@ public class RequestHandler extends SimpleChannelUpstreamHandler {
        * Обработка входящего сообщения
        */
       @Override
-      public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        
-        
+      public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {       
         try{
             
             //обработка входящего пакета 
-            BigEndianHeapChannelBuffer res = (BigEndianHeapChannelBuffer)e.getMessage();
-            byte[] res2 = res.array();
-            String str = new String(res2, "UTF-8");
-            int id = Integer.parseInt(str);
+            BigEndianHeapChannelBuffer packet = (BigEndianHeapChannelBuffer)e.getMessage();
+            //шапка пакета
+            short service_id = packet.getShort(0);
+            short type_header = packet.getShort(2);
+            short flag = packet.getShort(4);
+            int request_id = packet.getInt(6);
             
-            //test.id = id;
-            db.id = id;
-            /*ExecutorService service = Executors.newCachedThreadPool();
+            //шапка данных
+            byte type_data = packet.getByte(10);
+            byte number = packet.getByte(11);
+            
+            //данные
+            int timestamp = packet.getInt(12);
+            int longitude = packet.getInt(16);
+            int latitude = packet.getInt(20);
+            byte extra_dop = packet.getByte(24);
+            byte bat_voltage = packet.getByte(25);
+            short speed_avg = packet.getShort(26);
+            short speed_max = packet.getShort(28);
+            short course = packet.getShort(30);
+            short track = packet.getShort(32);
+            short altitude = packet.getShort(34);
+            byte nsat = packet.getByte(36);
+            byte pdop = packet.getByte(37);
+            
+            System.out.println(service_id + " " + type_header + " " + flag + " " + request_id + " "
+                    + type_data + " " + number + " " + timestamp + " " + longitude + " " + latitude + " " + extra_dop + " " + 
+                    bat_voltage + " " + speed_avg + " " + speed_max + " " + course + " " + track + " " + 
+                    altitude + " " + nsat + " " + pdop);
+            String log = service_id + " " + type_header + " " + flag + " " + request_id + " "
+                    + type_data + " " + number + " " + timestamp + " " + longitude + " " + latitude + " " + extra_dop + " " + 
+                    bat_voltage + " " + speed_avg + " " + speed_max + " " + course + " " + track + " " + 
+                    altitude + " " + nsat + " " + pdop;
+            
+            ExecutorService service = Executors.newCachedThreadPool();
             writeLog.msgEvent = e;
-            writeLog.param = name;
-            service.submit(writeLog);*/
+            writeLog.msg = log;
+            service.submit(writeLog);
             //запись в бд в отдельном потоке
-            Runnable r = db;
-            Thread t = new Thread(r);
-            t.start();
+           // Runnable r = db;
+           // Thread t = new Thread(r);
+           // t.start();
             //запись в бд без отдельного потока
             //test.run2();
-            Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Данные приняты " + WriteLog.getCurrentTime() + " " + id);
-            closeConn(e);
+            //Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Данные приняты " + WriteLog.getCurrentTime() + " " + id);
+            //closeConn(e);
             //запрос в бд
             /*SqlSession session = RequestDataSessionManager.getRequestSession();
             DataMapper mapper = session.getMapper(DataMapper.class);   
@@ -79,9 +104,7 @@ public class RequestHandler extends SimpleChannelUpstreamHandler {
             WriteLog.writeErrorLog(ex.toString());
         }finally{
             closeConn(e);
-        }
-            
-        
+        }  
       }
       
       /*

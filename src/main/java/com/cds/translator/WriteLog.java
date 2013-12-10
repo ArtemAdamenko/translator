@@ -38,7 +38,7 @@ public class WriteLog implements Runnable{
     
     /*параметры для вызова потока*/
     public MessageEvent msgEvent;
-    public String param;
+    public String msg;
     
     /*
      * Инициализация папок и файлов для логов
@@ -186,7 +186,7 @@ public class WriteLog implements Runnable{
 
     public void run() {
         try {
-            writeRouteLog(msgEvent, param);
+            writeRouteLog(msgEvent, msg);
             Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, "Записано " + WriteLog.getCurrentTime());
         } catch (IOException ex) {
             Logger.getLogger(WriteLog.class.getName()).log(Level.SEVERE, null, ex);
